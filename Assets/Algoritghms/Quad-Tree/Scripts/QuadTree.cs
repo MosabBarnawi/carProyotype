@@ -55,6 +55,7 @@ namespace BarnoGames.QuadTree
                     if (((Data.Count + 1) >= owner.PrefferedMaxDataPerNode) && CanSplit(owner))
                     {
                         SplitNode(owner);
+                        AddDataToChildren(owner, newData);
                     }
                     else
                         Data.Add(newData);
