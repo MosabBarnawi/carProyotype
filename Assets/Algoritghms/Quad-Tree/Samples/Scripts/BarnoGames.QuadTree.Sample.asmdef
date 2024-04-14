@@ -1,0 +1,16 @@
+{
+    "name": "BarnoGames.QuadTree.Sample",
+    "rootNamespace": "BarnoGames.QuadTree.Sample",
+    "references": [
+        "GUID:a207af1657d3e4656961ee6f655ec196"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
