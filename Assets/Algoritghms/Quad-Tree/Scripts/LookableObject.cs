@@ -1,17 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BarnoGames.QuadTree.Sample
 {
-    public class Obstacle2D : MonoBehaviour, ISpacialData2D
+    public class LookableObject : MonoBehaviour, ISpacialData2D
     {
         [SerializeField] private Collider LinkedCollider;
-        [SerializeField] private MeshRenderer LinkedMeshRenderer;
-        [SerializeField] private QuadTreeDebuggerSO quadTreeDebuggerSO;
-
-        private Material myMaterial;
 
         Vector3 CachedPosition;
         Rect? CachedBounds;
@@ -24,24 +17,6 @@ namespace BarnoGames.QuadTree.Sample
             {
                 return !Mathf.Approximately((transform.position - CachedPosition).sqrMagnitude, 0f);
             }
-        }
-
-
-        private void Start()
-        {
-            myMaterial = LinkedMeshRenderer.material;
-        }
-
-        public void OnVisable()
-        {
-            myMaterial.color = quadTreeDebuggerSO.InRangeColor;
-            //gameObject.SetActive(true);
-        }
-
-        public void OnInvisable()
-        {
-            myMaterial.color = quadTreeDebuggerSO.OutOfRanageColor;
-            //gameObject.SetActive(false);
         }
 
         public Vector2 GetLocation()
@@ -81,6 +56,16 @@ namespace BarnoGames.QuadTree.Sample
                                     halfHeight);
 
             CachedRadius = Mathf.Sqrt((halfWidth * halfWidth) + (halfHeight * halfHeight));
+        }
+
+        public void OnVisable()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void OnInvisable()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

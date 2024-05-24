@@ -1,4 +1,4 @@
-#define QUADTREE_TRACK_STATS
+//#define QUADTREE_TRACK_STATS
 
 using System;
 using System.Collections;
@@ -197,11 +197,18 @@ namespace BarnoGames.QuadTree
 
         public void DrawWireFrame()
         {
-            RootNode.Draw();
+            if(RootNode != null)
+                RootNode.Draw();
         }
 
         public HashSet<ISpacialData2D> FindDataInRange(Vector2 searchLocation, float searchRange)
         {
+            if(RootNode ==null)
+            {
+                //Debug.LogError("Root Node is Null, Returning Null");
+                return null;
+            }
+
 #if QUADTREE_TRACK_STATS
             var stopWatch = new System.Diagnostics.Stopwatch();
             stopWatch.Start();

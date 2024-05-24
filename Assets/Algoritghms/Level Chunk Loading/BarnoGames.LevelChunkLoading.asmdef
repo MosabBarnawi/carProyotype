@@ -1,7 +1,9 @@
 {
-    "name": "BarnoGame.QuadTree",
-    "rootNamespace": "BarnoGames.QuadTree",
-    "references": [],
+    "name": "BarnoGames.LevelChunkLoading",
+    "rootNamespace": "BarnoGames.LevelChunkLoading",
+    "references": [
+        "GUID:a207af1657d3e4656961ee6f655ec196"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

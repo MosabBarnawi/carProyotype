@@ -9,5 +9,7 @@ namespace BarnoGames.QuadTree
         Vector2 GetLocation();
         Rect GetBounds();
         float GetRadius();
+        void OnVisable();
+        void OnInvisable();
     }
 }

@@ -1,14 +1,13 @@
-using System.Collections.Generic;
 using System.Collections;
-using UnityEngine;
+using System.Collections.Generic;
 using BarnoGames.QuadTree;
-using System;
+using UnityEngine;
 
-namespace BarnoGames.QuadTree.Sample
+namespace BarnoGames.LevelChunkLoading
 {
     public class PlayerScript : MonoBehaviour
     {
-        [SerializeField] QuadTree LinkedQuadTree;
+        [SerializeField] QuadTree.QuadTree LinkedQuadTree;
         [SerializeField] float ObstacleSearchRange = 30f;
 
 
@@ -28,6 +27,13 @@ namespace BarnoGames.QuadTree.Sample
 
         #region UNITY METHODS
 
+        private void Start()
+        {
+            LinkedQuadTree = FindFirstObjectByType<QuadTree.QuadTree>(findObjectsInactive: FindObjectsInactive.Exclude);
+            Debug.Assert(LinkedQuadTree != null, "LinkedQuadTree is Null");
+            
+        }
+
         private void Update()
         {
             if (Cached2DPosition == null || HasMoved)
@@ -44,14 +50,22 @@ namespace BarnoGames.QuadTree.Sample
             if (!Application.isPlaying)
                 return;
 
-            LinkedQuadTree.DrawWireFrame();
+            if (LinkedQuadTree != null)
+                LinkedQuadTree.DrawWireFrame();
         }
 
         #endregion
 
+        public void OnSpawnCompleted_TEMP()
+        {
+            HighlightNearbyObjects();
+        }
 
         private void HighlightNearbyObjects()
         {
+            if (LinkedQuadTree == null)
+                return;
+
             HashSet<ISpacialData2D> candidateObstacles = LinkedQuadTree.FindDataInRange(Cached2DPosition.Value, ObstacleSearchRange);
 
             // Identify Removeals
@@ -96,13 +110,11 @@ namespace BarnoGames.QuadTree.Sample
 
         private void ProcessAddObstacle(ISpacialData2D newObstacle)
         {
-            //(newObstacle as Obstacle2D).OnVisable();
             newObstacle.OnVisable();
         }
 
         private void ProcessRemoveObstacles(ISpacialData2D removedObstacle)
         {
-            //(removedObstacle as Obstacle2D).OnInvisable();
             removedObstacle.OnInvisable();
         }
     }
