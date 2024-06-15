@@ -1,23 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using BarnoGames.QuadTree;
-using UnityEngine.UIElements;
 using BarnoGames.Tools;
+using UnityEngine.UIElements;
 
 namespace BarnoGames.LevelChunkLoading
 {
-    public class GroundSpawner : MonoBehaviour
+    public class SimpleGroundSpawner : MonoBehaviour
     {
+        [SerializeField] private KeyCode runtimeGenerateKey = KeyCode.G;
+        [SerializeField] private KeyCode runtimeClearKey = KeyCode.C;
         [SerializeField] private GameObject groundPrefab;
-        [SerializeField, Min(1)] private Vector2Int bounds = new Vector2Int(5, 5);
+
+        [Header("Prefab Settings"), Space(10)]
         [SerializeField] private Transform Root;
-        [SerializeField] private QuadTree.QuadTree quadTree;
+        [SerializeField] private bool isActiveOnSpawn = true;
+        [SerializeField, Min(1)] private Vector2Int bounds = new Vector2Int(5, 5);
         List<GameObject> groundTiles = new();
 
+        [ReadOnly, SerializeField] Rect BoundsSizeRect;
         Transform groundPrefabTransform;
         Vector3 BoundsSize;
-        [ReadOnly,SerializeField] Rect BoundsSizeRect;
+
+        [ReadOnly, SerializeField, Space(10)] int numberOfSpawnedObjects = 0;
 
         #region UNITY METHODS
 
@@ -44,8 +49,11 @@ namespace BarnoGames.LevelChunkLoading
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.G))
+            if (Input.GetKeyDown(runtimeGenerateKey))
                 GenerateGround();
+
+            if (Input.GetKeyDown(runtimeClearKey))
+                ClearnGroundObjects();
         }
 
         #endregion //UNITY METHODS
@@ -70,17 +78,37 @@ namespace BarnoGames.LevelChunkLoading
 
         }
 
+        [ContextMenu("Clear Gorund")]
+        private void ClearnGroundObjects()
+        {
+            for (int i = 0; i < groundTiles.Count; i++)
+            {
+                GameObject item = groundTiles[i];
+
+                if (Application.isPlaying)
+                    Destroy(item);
+                else
+                    DestroyImmediate(item);
+            }
+
+            groundTiles = new();
+            numberOfSpawnedObjects = groundTiles.Count;
+        }
+
         [ContextMenu("Spawn Gorund")]
         private void GenerateGround()
         {
             for (int i = 0; i < groundTiles.Count; i++)
             {
                 GameObject item = groundTiles[i];
-                Destroy(item);
-            }
-            groundTiles = new();
 
-            quadTree.PrepareTree(BoundsSizeRect);
+                if (Application.isPlaying)
+                    Destroy(item);
+                else
+                    DestroyImmediate(item);
+            }
+
+            groundTiles = new();
 
             Vector3 prefabSize = groundPrefabTransform.localScale;
             Transform parentRootTransform = Root != null ? Root : transform;
@@ -89,36 +117,37 @@ namespace BarnoGames.LevelChunkLoading
             {
                 for (int z = 0; z < bounds.y; z++)
                 {
-                    //float distance = Mathf.Sqrt((x - bounds.x / 2f) * (x - bounds.x / 2f) + (z - bounds.y / 2f) * (z - bounds.y / 2f));
-
-                    //// Calculate the Y position based on the distance
-                    //float yPos = Mathf.Sin(distance * Mathf.PI / (bounds.x / 2f)) * 10f; // Example formula, adjust as needed
-
                     Vector3 spawnPosition = new Vector3(prefabSize.x * (x - bounds.x / 2f + 0.5f),
                                                         //yPos,
                                                         0f,
                                                         prefabSize.z * (z - bounds.y / 2f + 0.5f));
                     GameObject go = Instantiate(groundPrefab, spawnPosition, Quaternion.identity, parentRootTransform);
-                    go.name += $" {spawnPosition}";
+                    int number_Debug = x * bounds.y + z + 1;
+
+                    string oldName = go.name;
+                    go.name = $"#{number_Debug} {oldName} {spawnPosition}";
+                    //go.name += $" {spawnPosition}, #{number_Debug}";
 
                     // DISABLE BY DEFAULT
-                    go.SetActive(false);
+                    go.SetActive(isActiveOnSpawn);
 
                     groundTiles.Add(go);
                     OnItmeSpawned(go);
                 }
             }
 
-            var playerScript = FindFirstObjectByType<LevelChunkLoading.PlayerScript>();
+            numberOfSpawnedObjects = groundTiles.Count;
 
-            if(playerScript != null)
-                playerScript.OnSpawnCompleted_TEMP();
+            //var playerScript = FindFirstObjectByType<LevelChunkLoading.PlayerScript>();
+
+            //if (playerScript != null)
+            //    playerScript.OnSpawnCompleted_TEMP();
         }
 
         public void OnItmeSpawned(GameObject itemGO)
         {
             ISpacialData2D spacialData2D = itemGO.GetComponent<ISpacialData2D>();
-            quadTree.AddData(spacialData2D);
+            //quadTree.AddData(spacialData2D);
         }
     }
 

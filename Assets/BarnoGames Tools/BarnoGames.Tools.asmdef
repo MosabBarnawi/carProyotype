@@ -1,10 +1,7 @@
 {
-    "name": "BarnoGames.LevelChunkLoading",
-    "rootNamespace": "BarnoGames.LevelChunkLoading",
-    "references": [
-        "GUID:a207af1657d3e4656961ee6f655ec196",
-        "GUID:b99150779785b4c098772b0d93d8a856"
-    ],
+    "name": "BarnoGames.Tools",
+    "rootNamespace": "BarnoGames.Tools",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
